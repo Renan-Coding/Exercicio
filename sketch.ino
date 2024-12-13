@@ -23,18 +23,18 @@ unsigned long buttonPressTime = 0;
 bool openSemaphore = false;
 
 void setup() {
-  pinMode(led_yellow, OUTPUT);
-  pinMode(led_green, OUTPUT);
-  pinMode(led_red, OUTPUT);
-  pinMode(buttonPin, INPUT);
+  pinMode(led_yellow, OUTPUT); // Configura o pino do LED amarelo como saída
+  pinMode(led_green, OUTPUT);  // Configura o pino do LED verde como saída
+  pinMode(led_red, OUTPUT);    // Configura o pino do LED vermelho como saída
+  pinMode(buttonPin, INPUT);   // Configura o pino do botão como entrada
 
-  digitalWrite(led_yellow, LOW);
-  digitalWrite(led_green, LOW);
-  digitalWrite(led_red, LOW);
+  digitalWrite(led_yellow, LOW); // Inicializa o LED amarelo desligado
+  digitalWrite(led_green, LOW);  // Inicializa o LED verde desligado
+  digitalWrite(led_red, LOW);    // Inicializa o LED vermelho desligado
 
-  Serial.begin(9600);
+  Serial.begin(9600); // Inicializa a comunicação serial
 
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password); // Conecta ao WiFi
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
     Serial.print(".");
@@ -43,22 +43,22 @@ void setup() {
 }
 
 void loop() {
-  int ldrstatus = analogRead(ldrPin);
+  int ldrstatus = analogRead(ldrPin); // Lê o valor do LDR
 
   if (ldrstatus <= threshold) {
     // Modo noturno
     Serial.print("Está escuro, pisque o LED amarelo: ");
     Serial.println(ldrstatus);
-    digitalWrite(led_yellow, HIGH);
+    digitalWrite(led_yellow, HIGH); // Liga o LED amarelo
     delay(500);
-    digitalWrite(led_yellow, LOW);
+    digitalWrite(led_yellow, LOW);  // Desliga o LED amarelo
     delay(500);
   } else {
     // Modo claro
     Serial.print("Está claro, siga a temporização dos LEDs: ");
     Serial.println(ldrstatus);
 
-    int reading = digitalRead(buttonPin);
+    int reading = digitalRead(buttonPin); // Lê o estado do botão
 
     // Gerenciamento de debounce
     if (reading != lastButtonState) {
@@ -98,23 +98,23 @@ void loop() {
     if (openSemaphore && (millis() - buttonPressTime >= 1000)) {
       openSemaphore = false;
       Serial.println("Abrindo semáforo após 1 segundo do botão pressionado.");
-      digitalWrite(led_red, LOW);
-      digitalWrite(led_green, HIGH);
+      digitalWrite(led_red, LOW);   // Desliga o LED vermelho
+      digitalWrite(led_green, HIGH); // Liga o LED verde
       delay(3000);
-      digitalWrite(led_green, LOW);
+      digitalWrite(led_green, LOW);  // Desliga o LED verde
     } else if (!openSemaphore) {
       // Temporização convencional dos LEDs
-      digitalWrite(led_green, HIGH);
+      digitalWrite(led_green, HIGH); // Liga o LED verde
       delay(3000);
-      digitalWrite(led_green, LOW);
+      digitalWrite(led_green, LOW);  // Desliga o LED verde
       
-      digitalWrite(led_yellow, HIGH);
+      digitalWrite(led_yellow, HIGH); // Liga o LED amarelo
       delay(2000);
-      digitalWrite(led_yellow, LOW);
+      digitalWrite(led_yellow, LOW);  // Desliga o LED amarelo
 
-      digitalWrite(led_red, HIGH);
+      digitalWrite(led_red, HIGH);    // Liga o LED vermelho
       delay(5000);
-      digitalWrite(led_red, LOW);
+      digitalWrite(led_red, LOW);     // Desliga o LED vermelho
     }
   }
 }
@@ -122,7 +122,7 @@ void loop() {
 void sendAlert() {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    http.begin("http://www.google.com.br/");
+    http.begin("http://www.google.com.br/"); // URL para enviar o alerta
     int httpCode = http.GET();
 
     if (httpCode > 0) {
